@@ -5,25 +5,38 @@ import axios from "axios";
 // import defaultCatImage from "../../icons/cat.png";
 
 const apiKey = import.meta.env.VITE_API_KEY; //vite에서 api키 env로 받아오는법.
-const getApi = `https://api.thecatapi.com/v1/images/search?limit=1&breed_ids=beng&api_key=${apiKey}`;
+const apiBaseUrl = `https://api.thecatapi.com/v1`;
+const axiosInstance = axios.create({
+  baseURL: apiBaseUrl,
+  params: {
+    api_key: apiKey,
+  },
+});
 
 function Main() {
   const [catImage, setCatImage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const clickButton = () => {
+  const clickButton = async () => {
     setLoading(true);
-    axios
-      .get(getApi)
-      .then((response) => {
-        console.log(response.data);
-        setLoading(false);
-        setCatImage(response.data[0].url);
+    // axios async-await 방식으로 fetch 하게 변경
+    const [result, error] = await axiosInstance
+      .get("/images/search", {
+        params: {
+          limit: 1,
+          breed_ids: "beng",
+        },
       })
-      .catch((e) => {
-        setLoading(false);
-        console.error("Error ", e);
-      });
+      .then((res) => [res.data[0].url, null])
+      .catch((err) => [null, err]);
+    setLoading(false);
+
+    if (error) {
+      alert("에러가 발생했습니다.");
+      throw error;
+    }
+
+    setCatImage(result);
   };
 
   return (
