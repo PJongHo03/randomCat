@@ -10,7 +10,6 @@ const getApi = `https://api.thecatapi.com/v1/images/search?limit=1&breed_ids=ben
 function Main() {
   const [catImage, setCatImage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const boxes = Array.from({ length: 1 });
 
   const clickButton = () => {
     setLoading(true);
@@ -26,7 +25,7 @@ function Main() {
         console.error("Error ", e);
       });
   };
-  //로딩 추가하기/
+
   return (
     <main>
       <h2>🐾 랜덤으로 귀여운 고양이를 만나보세요! 🐾</h2>
